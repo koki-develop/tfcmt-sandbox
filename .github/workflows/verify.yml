@@ -35,6 +35,6 @@ jobs:
           tar -xzf tfcmt_linux_amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: ./tfcmt --disable-label plan -- cat plan.txt
+      - run: ./tfcmt plan --disable-label -- cat plan.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
