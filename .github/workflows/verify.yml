@@ -32,6 +32,9 @@ jobs:
           name: plan
       - run: |
           gh release download v4.14.19 --repo suzuki-shunsuke/tfcmt --pattern 'tfcmt_linux_amd64.tar.gz'
+          gh attestation verify tfcmt_linux_amd64.tar.gz \
+            --repo suzuki-shunsuke/tfcmt \
+            --signer-repo suzuki-shunsuke/go-release-workflow
           tar -xzf tfcmt_linux_amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
