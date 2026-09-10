@@ -15,10 +15,15 @@ jobs:
       - run: |
           terraform -chdir=terraform init -input=false
           terraform -chdir=terraform plan -input=false -no-color > plan.txt
+      - run: |
+          terraform -chdir=terraform-broken init -input=false
+          terraform -chdir=terraform-broken plan -input=false -no-color > plan-error.txt 2>&1 || true
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: plan
-          path: plan.txt
+          path: |
+            plan.txt
+            plan-error.txt
 
   comment:
     needs: plan
@@ -42,5 +47,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: ./tfcmt --var 'target:example' plan --disable-label --patch -- cat plan.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          set +e
+          ./tfcmt --var 'target:error' plan --disable-label --patch -- cat plan-error.txt
+          echo "tfcmt exit=$?"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
